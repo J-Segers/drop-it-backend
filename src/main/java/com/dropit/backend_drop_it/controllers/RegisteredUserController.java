@@ -2,7 +2,7 @@ package com.dropit.backend_drop_it.controllers;
 
 import com.dropit.backend_drop_it.dtos.NewRegisteredUserDto;
 import com.dropit.backend_drop_it.dtos.RegisteredUserDto;
-import com.dropit.backend_drop_it.services.RegisteredUserService;
+import com.dropit.backend_drop_it.services.RegisteredUserServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,9 +14,9 @@ import java.util.ArrayList;
 @RequestMapping("v1/users")
 public class RegisteredUserController {
 
-    private final RegisteredUserService registeredUserService;
+    private final RegisteredUserServiceImpl registeredUserService;
 
-    public RegisteredUserController(RegisteredUserService registeredUserService) {
+    public RegisteredUserController(RegisteredUserServiceImpl registeredUserService) {
         this.registeredUserService = registeredUserService;
     }
 

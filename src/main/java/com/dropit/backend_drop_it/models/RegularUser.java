@@ -1,0 +1,70 @@
+package com.dropit.backend_drop_it.models;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+
+@Entity
+public class RegularUser {
+
+    @Id
+    private Long id;
+
+    private Long registeredUserId;
+
+    private ArrayList<Long> likedSongs = new ArrayList<>();
+    private ArrayList<Long> dislikedSongs = new ArrayList<>();
+    private ArrayList<Long> competitionsVoted = new ArrayList<>();
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getRegisteredUserId() {
+        return registeredUserId;
+    }
+
+    public void setRegisteredUserId(Long registeredUserId) {
+        this.registeredUserId = registeredUserId;
+    }
+
+    public ArrayList<Long> getLikedSongs() {
+        return likedSongs;
+    }
+
+    public void setLikedSongs(ArrayList<Long> likedSongs) {
+        this.likedSongs = likedSongs;
+    }
+
+    public void addSongToLikedList(Long songId) {
+        likedSongs.add(songId);
+    }
+
+    public ArrayList<Long> getDislikedSongs() {
+        return dislikedSongs;
+    }
+
+    public void setDislikedSongs(ArrayList<Long> dislikedSongs) {
+        this.dislikedSongs = dislikedSongs;
+    }
+
+    public void addSongToDislikedList(Long songId) {
+        likedSongs.add(songId);
+    }
+
+    public ArrayList<Long> getCompetitionsVoted() {
+        return competitionsVoted;
+    }
+
+    public void setCompetitionsVoted(ArrayList<Long> competitionsVoted) {
+        this.competitionsVoted = competitionsVoted;
+    }
+
+    public void addCompToVotedList(Long CompetitionId) {
+        competitionsVoted.add(CompetitionId);
+    }
+
+}

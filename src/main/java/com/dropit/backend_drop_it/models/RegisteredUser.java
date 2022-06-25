@@ -2,13 +2,16 @@ package com.dropit.backend_drop_it.models;
 
 import javax.persistence.*;
 
-
 @Entity
 public class RegisteredUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
+
+    private Long regularUserId;
+    private Long artistId;
+    private Long producerId;
 
     private String name;
     private String email;
@@ -16,8 +19,38 @@ public class RegisteredUser {
     private String dob;
     private String location;
 
-    public long getId() {
+    //roles
+    private boolean isRegularUser = true;
+    private boolean isAdmin = false;
+    private boolean isArtist = false;
+    private boolean isProducer = false;
+
+    public Long getId() {
         return id;
+    }
+
+    public Long getRegularUserId() {
+        return regularUserId;
+    }
+
+    public void setRegularUserId(Long regularUserId) {
+        this.regularUserId = regularUserId;
+    }
+
+    public Long getArtistId() {
+        return artistId;
+    }
+
+    public void setArtistId(Long artistId) {
+        this.artistId = artistId;
+    }
+
+    public Long getProducerId() {
+        return producerId;
+    }
+
+    public void setProducerId(Long producerId) {
+        this.producerId = producerId;
     }
 
     public String getName() {
@@ -58,6 +91,38 @@ public class RegisteredUser {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public boolean isRegularUser() {
+        return isRegularUser;
+    }
+
+    public void setRegularUser(boolean regularUser) {
+        isRegularUser = regularUser;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
+    }
+
+    public boolean isArtist() {
+        return isArtist;
+    }
+
+    public void setArtist(boolean artist) {
+        isArtist = artist;
+    }
+
+    public boolean isProducer() {
+        return isProducer;
+    }
+
+    public void setProducer(boolean producer) {
+        isProducer = producer;
     }
 
 }

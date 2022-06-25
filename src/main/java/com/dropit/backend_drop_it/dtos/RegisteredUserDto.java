@@ -1,10 +1,11 @@
 package com.dropit.backend_drop_it.dtos;
 
-import java.text.SimpleDateFormat;
-
 public class RegisteredUserDto {
 
     private Long id;
+    private Long regularUserId;
+    private Long artistId;
+    private Long producerId;
     private String name;
     private String email;
     private String userName;
@@ -17,6 +18,30 @@ public class RegisteredUserDto {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getRegularUserId() {
+        return regularUserId;
+    }
+
+    public void setRegularUserId(Long regularUserId) {
+        this.regularUserId = regularUserId;
+    }
+
+    public Long getArtistId() {
+        return artistId;
+    }
+
+    public void setArtistId(Long artistId) {
+        this.artistId = artistId;
+    }
+
+    public Long getProducerId() {
+        return producerId;
+    }
+
+    public void setProducerId(Long producerId) {
+        this.producerId = producerId;
     }
 
     public String getName() {
