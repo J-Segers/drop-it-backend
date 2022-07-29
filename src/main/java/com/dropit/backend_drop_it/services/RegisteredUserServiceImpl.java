@@ -1,12 +1,16 @@
 package com.dropit.backend_drop_it.services;
 
 import com.dropit.backend_drop_it.dtos.NewRegisteredUserDto;
+import com.dropit.backend_drop_it.dtos.NewRegularUserDto;
 import com.dropit.backend_drop_it.dtos.RegisteredUserDto;
+import com.dropit.backend_drop_it.entities.Authority;
 import com.dropit.backend_drop_it.exceptions.DuplicateEmailException;
 import com.dropit.backend_drop_it.exceptions.RecordNotFoundException;
-import com.dropit.backend_drop_it.models.RegisteredUser;
-import com.dropit.backend_drop_it.models.RegularUser;
+import com.dropit.backend_drop_it.entities.RegisteredUser;
+import com.dropit.backend_drop_it.repositories.AuthRepository;
 import com.dropit.backend_drop_it.repositories.RegisteredUserRepository;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,10 +22,12 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
 
     private final RegisteredUserRepository registeredUserRepository;
     private final RegularUserService regularUserService;
+    private final AuthRepository authRepository;
 
-    public RegisteredUserServiceImpl(RegisteredUserRepository registeredUserRepository, RegularUserService regularUserService) {
+    public RegisteredUserServiceImpl(RegisteredUserRepository registeredUserRepository, RegularUserService regularUserService, AuthRepository authRepository) {
         this.registeredUserRepository = registeredUserRepository;
         this.regularUserService = regularUserService;
+        this.authRepository = authRepository;
     }
 
     @Override
@@ -43,6 +49,7 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
         return outputList;
     }
 
+    @Override
     public RegisteredUserDto addNewUser(NewRegisteredUserDto userDto) {
         Optional<RegisteredUser> result = registeredUserRepository.findByEmail(userDto.getEmail());
 
@@ -55,17 +62,31 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
         //save to generate userId so we can add it later to the regular user.
         user = registeredUserRepository.save(user);
 
-        RegularUser regularUser = new RegularUser();
+        NewRegularUserDto newRegularUser = createNewRegularUserDto(user);
 
-        regularUser.setId(generateRandomSequence());
-        user.setRegularUserId(regularUser.getId());
-        regularUser.setRegisteredUserId(user.getId());
+        user.setRegularUserId(newRegularUser.getId());
 
-        regularUserService.addNewRegularUser(regularUser);
+        Authority authority = new Authority();
+        authority.setUsername(userDto.getUserName());
+        authority.setAuthority("USER");
+        authRepository.save(authority);
+
+        regularUserService.addNewRegularUser(newRegularUser);
 
         return convertToOutputDto(registeredUserRepository.save(user));
     }
 
+    private NewRegularUserDto createNewRegularUserDto(RegisteredUser user) {
+        NewRegularUserDto regularUser = new NewRegularUserDto();
+
+        regularUser.setId(generateRandomSequence());
+        regularUser.setRegisteredUserId(user.getId());
+        regularUser.setUsername(user.getUsername());
+
+        return regularUser;
+    }
+
+    @Override
     public RegisteredUserDto updateUser(Long id, RegisteredUserDto userDto) {
         checkIfUserExistsById(id);
 
@@ -74,19 +95,12 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
         return convertToOutputDto(registeredUserRepository.save(updateUserFromDto(userToUpdate, userDto)));
     }
 
+    @Override
     public void removeUser(Long id) {
         checkIfUserExistsById(id);
         RegisteredUser user = registeredUserRepository.getReferenceById(id);
         regularUserService.removeRegularUser(user.getId());
-        if(user.isArtist()) {
-            //remove from artistRepository
-        }
-        if (user.isProducer()) {
-            //remove from producerRepository
-        }
-        if (user.isAdmin()) {
-            //remove from adminRepository
-        }
+
         registeredUserRepository.deleteById(id);
     }
 
@@ -100,7 +114,7 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
 
     private RegisteredUser updateUserFromDto(RegisteredUser userToUpdate, RegisteredUserDto userDto) {
         userToUpdate.setName(userDto.getName());
-        userToUpdate.setUserName(userDto.getUserName());
+        userToUpdate.setUsername(userDto.getUserName());
         userToUpdate.setDob(userDto.getDob());
         userToUpdate.setEmail(userDto.getEmail());
         userToUpdate.setLocation(userDto.getLocation());
@@ -110,9 +124,12 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
 
     private RegisteredUser convertNewDtoToEntity(NewRegisteredUserDto userDto) {
         RegisteredUser user = new RegisteredUser();
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
         user.setName(userDto.getName());
-        user.setUserName(userDto.getUserName());
+        user.setUsername(userDto.getUserName());
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        user.setEnabled(userDto.isEnabled());
         user.setDob(userDto.getDob());
         user.setEmail(userDto.getEmail());
         user.setLocation(userDto.getLocation());
@@ -128,7 +145,7 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
         userDto.setArtistId(user.getArtistId());
         userDto.setProducerId(user.getProducerId());
         userDto.setName(user.getName());
-        userDto.setUserName(user.getUserName());
+        userDto.setUserName(user.getUsername());
         userDto.setDob(user.getDob());
         userDto.setEmail(user.getEmail());
         userDto.setLocation(user.getLocation());

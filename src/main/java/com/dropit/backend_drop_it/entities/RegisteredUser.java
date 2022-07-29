@@ -1,6 +1,7 @@
-package com.dropit.backend_drop_it.models;
+package com.dropit.backend_drop_it.entities;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 public class RegisteredUser {
@@ -15,15 +16,20 @@ public class RegisteredUser {
 
     private String name;
     private String email;
-    private String userName;
+    private String username;
+    private String password;
     private String dob;
     private String location;
+    private boolean enabled;
 
-    //roles
-    private boolean isRegularUser = true;
-    private boolean isAdmin = false;
-    private boolean isArtist = false;
-    private boolean isProducer = false;
+    @OneToMany(
+            targetEntity = Authority.class,
+            mappedBy = "username",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
+    private Set<Authority> authorities;
 
     public Long getId() {
         return id;
@@ -69,12 +75,16 @@ public class RegisteredUser {
         this.email = email;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUsername(String userName) {
+        this.username = userName;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getDob() {
@@ -93,36 +103,11 @@ public class RegisteredUser {
         this.location = location;
     }
 
-    public boolean isRegularUser() {
-        return isRegularUser;
+    public boolean isEnabled() {
+        return enabled;
     }
 
-    public void setRegularUser(boolean regularUser) {
-        isRegularUser = regularUser;
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
-
-    public boolean isAdmin() {
-        return isAdmin;
-    }
-
-    public void setAdmin(boolean admin) {
-        isAdmin = admin;
-    }
-
-    public boolean isArtist() {
-        return isArtist;
-    }
-
-    public void setArtist(boolean artist) {
-        isArtist = artist;
-    }
-
-    public boolean isProducer() {
-        return isProducer;
-    }
-
-    public void setProducer(boolean producer) {
-        isProducer = producer;
-    }
-
 }

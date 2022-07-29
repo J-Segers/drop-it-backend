@@ -1,6 +1,6 @@
 package com.dropit.backend_drop_it.repositories;
 
-import com.dropit.backend_drop_it.models.RegisteredUser;
+import com.dropit.backend_drop_it.entities.RegisteredUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

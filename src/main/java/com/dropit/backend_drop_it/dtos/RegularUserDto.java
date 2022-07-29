@@ -6,6 +6,10 @@ public class RegularUserDto {
 
     private Long id;
 
+    private String username;
+
+    private boolean enabled;
+
     private ArrayList<Long> likedSongs = new ArrayList<>();
     private ArrayList<Long> dislikedSongs = new ArrayList<>();
     private ArrayList<Long> competitionsVoted = new ArrayList<>();
@@ -16,6 +20,22 @@ public class RegularUserDto {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     public ArrayList<Long> getLikedSongs() {

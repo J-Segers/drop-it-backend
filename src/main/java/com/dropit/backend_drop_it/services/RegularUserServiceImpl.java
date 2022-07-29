@@ -1,7 +1,8 @@
 package com.dropit.backend_drop_it.services;
 
+import com.dropit.backend_drop_it.dtos.NewRegularUserDto;
 import com.dropit.backend_drop_it.dtos.RegularUserDto;
-import com.dropit.backend_drop_it.models.RegularUser;
+import com.dropit.backend_drop_it.entities.RegularUser;
 import com.dropit.backend_drop_it.repositories.RegularUserRepository;
 import org.springframework.stereotype.Service;
 
@@ -28,8 +29,10 @@ public class RegularUserServiceImpl implements RegularUserService {
         return convertEntityListToDtoList(regularUserRepository.findAll());
     }
 
-    public void addNewRegularUser(RegularUser user) {
-        regularUserRepository.save(user);
+    @Override
+    public void addNewRegularUser(NewRegularUserDto newRegularUser) {
+        RegularUser newUser = convertNewDtoToEntity(newRegularUser);
+        regularUserRepository.save(newUser);
     }
 
     @Override
@@ -43,9 +46,20 @@ public class RegularUserServiceImpl implements RegularUserService {
         regularUserRepository.deleteById(id);
     }
 
+    private RegularUser convertNewDtoToEntity(NewRegularUserDto dto) {
+        RegularUser regularUser = new RegularUser();
+
+        regularUser.setUsername(dto.getUsername());
+        regularUser.setId(dto.getId());
+        regularUser.setRegisteredUserId(dto.getRegisteredUserId());
+
+        return regularUser;
+    }
+
     private RegularUser convertDtoToEntity(RegularUserDto userDto) {
         RegularUser regularUser = new RegularUser();
 
+        regularUser.setUsername(userDto.getUsername());
         regularUser.setLikedSongs(userDto.getLikedSongs());
         regularUser.setDislikedSongs(userDto.getDislikedSongs());
         regularUser.setCompetitionsVoted(userDto.getCompetitionsVoted());
@@ -68,6 +82,7 @@ public class RegularUserServiceImpl implements RegularUserService {
         RegularUserDto dto = new RegularUserDto();
 
         dto.setId(user.getId());
+        dto.setUsername(user.getUsername());
         dto.setLikedSongs(user.getLikedSongs());
         dto.setDislikedSongs(user.getDislikedSongs());
         dto.setCompetitionsVoted(user.getCompetitionsVoted());

@@ -1,4 +1,4 @@
-package com.dropit.backend_drop_it.models;
+package com.dropit.backend_drop_it.entities;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -11,6 +11,8 @@ public class RegularUser {
 
     private Long registeredUserId;
 
+    private String username;
+
     private ArrayList<Long> likedSongs = new ArrayList<>();
     private ArrayList<Long> dislikedSongs = new ArrayList<>();
     private ArrayList<Long> competitionsVoted = new ArrayList<>();
@@ -21,6 +23,14 @@ public class RegularUser {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public Long getRegisteredUserId() {
