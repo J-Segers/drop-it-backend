@@ -67,7 +67,7 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
         user.setRegularUserId(newRegularUser.getId());
 
         Authority authority = new Authority();
-        authority.setUsername(userDto.getUserName());
+        authority.setUsername(userDto.getUsername());
         authority.setAuthority("USER");
         authRepository.save(authority);
 
@@ -88,9 +88,9 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
 
     @Override
     public RegisteredUserDto updateUser(Long id, RegisteredUserDto userDto) {
-        checkIfUserExistsById(id);
 
-        RegisteredUser userToUpdate = registeredUserRepository.getReferenceById(id);
+
+        RegisteredUser userToUpdate = checkIfUserExistsById(id);
 
         return convertToOutputDto(registeredUserRepository.save(updateUserFromDto(userToUpdate, userDto)));
     }
@@ -104,12 +104,24 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
         registeredUserRepository.deleteById(id);
     }
 
-    private void checkIfUserExistsById(Long id) {
+    public RegisteredUser checkIfUserExistsByEmail(String email) {
+        Optional<RegisteredUser> result = registeredUserRepository.findByEmail(email);
+
+        if (result.isEmpty()) {
+            throw new RecordNotFoundException("This user does not exist.");
+        }
+
+        return result.get();
+    }
+
+    private RegisteredUser checkIfUserExistsById(Long id) {
         Optional<RegisteredUser> result = registeredUserRepository.findById(id);
 
         if (result.isEmpty()) {
             throw new RecordNotFoundException("This user does not exist.");
         }
+
+        return result.get();
     }
 
     private RegisteredUser updateUserFromDto(RegisteredUser userToUpdate, RegisteredUserDto userDto) {
@@ -126,13 +138,10 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
         RegisteredUser user = new RegisteredUser();
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-        user.setName(userDto.getName());
-        user.setUsername(userDto.getUserName());
+        user.setUsername(userDto.getUsername());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        user.setEnabled(userDto.isEnabled());
-        user.setDob(userDto.getDob());
         user.setEmail(userDto.getEmail());
-        user.setLocation(userDto.getLocation());
+        user.setEnabled(true);
 
         return user;
     }

@@ -10,14 +10,17 @@ public class RegisteredUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    @Column(nullable = false, unique = true)
+    private String password;
+
     private Long regularUserId;
     private Long artistId;
     private Long producerId;
-
     private String name;
-    private String email;
     private String username;
-    private String password;
     private String dob;
     private String location;
     private boolean enabled;
@@ -101,6 +104,18 @@ public class RegisteredUser {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public Set<Authority> getAuthorities() {
+        return authorities;
+    }
+
+    public void addAuthority(Authority authority) {
+        this.authorities.add(authority);
+    }
+
+    public void removeAuthority(Authority authority) {
+        this.authorities.remove(authority);
     }
 
     public boolean isEnabled() {

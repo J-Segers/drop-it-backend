@@ -7,11 +7,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+
 @Service
 public class AuthServiceImpl implements AuthService{
 
     private final AuthenticationManager authenticationManager;
-    private final JwtServiceImpl jwtService;
+    private final JwtService jwtService;
 
     public AuthServiceImpl(AuthenticationManager authenticationManager, JwtServiceImpl jwtService) {
         this.authenticationManager = authenticationManager;
@@ -24,7 +25,9 @@ public class AuthServiceImpl implements AuthService{
         UsernamePasswordAuthenticationToken authToken =
                 new UsernamePasswordAuthenticationToken(authDto.getUsername(), authDto.getPassword());
 
-        UserDetails userDetails = (UserDetails) authenticationManager.authenticate(authToken).getPrincipal();
+        Authentication authentication = authenticationManager.authenticate(authToken);
+
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
         return jwtService.generateToken(userDetails);
     }

@@ -21,8 +21,8 @@ public class NewRegularUserDto {
         return registeredUserId;
     }
 
-    public void setRegisteredUserId(Long registerdUserId) {
-        this.registeredUserId = registerdUserId;
+    public void setRegisteredUserId(Long registeredUserId) {
+        this.registeredUserId = registeredUserId;
     }
 
     public String getUsername() {
@@ -35,6 +35,10 @@ public class NewRegularUserDto {
 
     public String getPassword() {
         return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
 }

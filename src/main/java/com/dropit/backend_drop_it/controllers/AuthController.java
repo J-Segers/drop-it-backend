@@ -1,19 +1,20 @@
 package com.dropit.backend_drop_it.controllers;
 
 import com.dropit.backend_drop_it.dtos.AuthDto;
-import com.dropit.backend_drop_it.services.AuthServiceImpl;
+import com.dropit.backend_drop_it.services.AuthService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final AuthServiceImpl authService;
+    private final AuthService authService;
 
-    public AuthController(AuthServiceImpl authService) {
+    public AuthController(AuthService authService) {
         this.authService = authService;
     }
 

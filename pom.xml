@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.dropit</groupId>
     <artifactId>backend_drop_it</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.8.0-SNAPSHOT</version>
     <name>backend_drop_it</name>
     <description>backend_drop_it</description>
     <properties>
@@ -26,6 +26,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-jdbc</artifactId>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
