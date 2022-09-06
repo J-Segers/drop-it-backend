@@ -2,26 +2,26 @@ package com.dropit.backend_drop_it.dtos;
 
 
 
-public class NewRegularUserDto {
+public class NewProfileDto {
 
-    private Long id;
+    private String id;
     private String username;
     private String password;
-    private Long registeredUserId;
+    private String registeredUserId;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public Long getRegisteredUserId() {
+    public String getRegisteredUserId() {
         return registeredUserId;
     }
 
-    public void setRegisteredUserId(Long registeredUserId) {
+    public void setRegisteredUserId(String registeredUserId) {
         this.registeredUserId = registeredUserId;
     }
 

@@ -2,45 +2,45 @@ package com.dropit.backend_drop_it.dtos;
 
 public class RegisteredUserDto {
 
-    private Long id;
-    private Long regularUserId;
-    private Long artistId;
-    private Long producerId;
+    private String id;
+    private String profileId;
+    private String artistId;
+    private String producerId;
     private String name;
     private String email;
     private String userName;
     private String dob;
     private String location;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public Long getRegularUserId() {
-        return regularUserId;
+    public String getProfileId() {
+        return profileId;
     }
 
-    public void setRegularUserId(Long regularUserId) {
-        this.regularUserId = regularUserId;
+    public void setProfileId(String regularUserId) {
+        this.profileId = regularUserId;
     }
 
-    public Long getArtistId() {
+    public String getArtistId() {
         return artistId;
     }
 
-    public void setArtistId(Long artistId) {
+    public void setArtistId(String artistId) {
         this.artistId = artistId;
     }
 
-    public Long getProducerId() {
+    public String getProducerId() {
         return producerId;
     }
 
-    public void setProducerId(Long producerId) {
+    public void setProducerId(String producerId) {
         this.producerId = producerId;
     }
 

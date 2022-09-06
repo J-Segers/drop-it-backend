@@ -22,13 +22,19 @@ public class RegisteredUserController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<RegisteredUserDto> getUser(@PathVariable long id) {
+    public ResponseEntity<RegisteredUserDto> getUser(@PathVariable String id) {
         return ResponseEntity.ok(registeredUserService.getUser(id));
     }
 
     @GetMapping
-    public ResponseEntity<ArrayList<RegisteredUserDto>> getAllUsers() {
-        return ResponseEntity.ok(registeredUserService.getAllUsers());
+    public ResponseEntity<ArrayList<RegisteredUserDto>> getAllUsers(@RequestParam(required = false) String username) {
+
+        if(!username.isEmpty()) {
+                return ResponseEntity.ok(registeredUserService.getUserByCredentials(username));
+        } else {
+            return ResponseEntity.ok(registeredUserService.getAllUsers());
+        }
+
     }
 
     @PostMapping
@@ -39,14 +45,14 @@ public class RegisteredUserController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<RegisteredUserDto> updateUser(@PathVariable Long id, @RequestBody RegisteredUserDto userDto) {
+    public ResponseEntity<RegisteredUserDto> updateUser(@PathVariable String id, @RequestBody RegisteredUserDto userDto) {
         userDto = registeredUserService.updateUser(id, userDto);
         return ResponseEntity.accepted().body(userDto);
     }
 
 
     @DeleteMapping("{id}")
-    public ResponseEntity<HttpStatus> removeUser(@PathVariable Long id) {
+    public ResponseEntity<HttpStatus> removeUser(@PathVariable String id) {
         registeredUserService.removeUser(id);
         return ResponseEntity.notFound().build();
     }

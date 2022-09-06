@@ -4,24 +4,28 @@ import javax.persistence.*;
 import java.util.ArrayList;
 
 @Entity
-public class RegularUser {
+public class Profile {
 
     @Id
-    private Long id;
+    private String id;
 
-    private Long registeredUserId;
+    private String registeredUserId;
 
     private String username;
+
+    private String name;
+    private String location;
+    private String story;
 
     private ArrayList<Long> likedSongs = new ArrayList<>();
     private ArrayList<Long> dislikedSongs = new ArrayList<>();
     private ArrayList<Long> competitionsVoted = new ArrayList<>();
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -33,11 +37,11 @@ public class RegularUser {
         this.username = username;
     }
 
-    public Long getRegisteredUserId() {
+    public String getRegisteredUserId() {
         return registeredUserId;
     }
 
-    public void setRegisteredUserId(Long registeredUserId) {
+    public void setRegisteredUserId(String registeredUserId) {
         this.registeredUserId = registeredUserId;
     }
 

@@ -48,7 +48,7 @@ public class JwtServiceImpl implements JwtService {
 
     private String createToken(Map<String, Object> claims, String username) {
 
-        long validPeriod = 1000 * 60 * 60 * 24; // 1 day
+        long validPeriod = 1000 * 60 ; // 1 day * 60 * 24
         long currentTime = System.currentTimeMillis();
 
         return Jwts.builder()

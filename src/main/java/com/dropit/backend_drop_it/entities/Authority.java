@@ -1,13 +1,9 @@
 package com.dropit.backend_drop_it.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 
-@Entity
-@Table(name = "authorities")
+@Entity(name = "authorities")
 public class Authority implements Serializable {
 
     @Id
@@ -16,6 +12,14 @@ public class Authority implements Serializable {
 
     @Column(nullable = false)
     private String authority;
+
+    public Authority() {
+    }
+
+    public Authority(String username, String authority) {
+        this.username = username;
+        this.authority = authority;
+    }
 
     public String getUsername() {
         return username;

@@ -2,9 +2,9 @@ package com.dropit.backend_drop_it.dtos;
 
 import java.util.ArrayList;
 
-public class RegularUserDto {
+public class ProfileDto {
 
-    private Long id;
+    private String id;
 
     private String username;
 
@@ -14,11 +14,11 @@ public class RegularUserDto {
     private ArrayList<Long> dislikedSongs = new ArrayList<>();
     private ArrayList<Long> competitionsVoted = new ArrayList<>();
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

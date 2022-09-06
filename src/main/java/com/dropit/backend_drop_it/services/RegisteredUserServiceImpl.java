@@ -1,14 +1,17 @@
 package com.dropit.backend_drop_it.services;
 
 import com.dropit.backend_drop_it.dtos.NewRegisteredUserDto;
-import com.dropit.backend_drop_it.dtos.NewRegularUserDto;
+import com.dropit.backend_drop_it.dtos.NewProfileDto;
 import com.dropit.backend_drop_it.dtos.RegisteredUserDto;
 import com.dropit.backend_drop_it.entities.Authority;
 import com.dropit.backend_drop_it.exceptions.DuplicateEmailException;
 import com.dropit.backend_drop_it.exceptions.RecordNotFoundException;
 import com.dropit.backend_drop_it.entities.RegisteredUser;
+import com.dropit.backend_drop_it.exceptions.UsernameAlreadyExistsException;
 import com.dropit.backend_drop_it.repositories.AuthRepository;
 import com.dropit.backend_drop_it.repositories.RegisteredUserRepository;
+import com.dropit.backend_drop_it.util.SequenceGenerator;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,18 +23,28 @@ import java.util.Optional;
 @Service
 public class RegisteredUserServiceImpl implements RegisteredUserService {
 
+    private final int idLength = 10;
+
+    private final SequenceGenerator sequenceGenerator = new SequenceGenerator();
     private final RegisteredUserRepository registeredUserRepository;
-    private final RegularUserService regularUserService;
+    private final ProfileService profileService;
     private final AuthRepository authRepository;
 
-    public RegisteredUserServiceImpl(RegisteredUserRepository registeredUserRepository, RegularUserService regularUserService, AuthRepository authRepository) {
+    public RegisteredUserServiceImpl(RegisteredUserRepository registeredUserRepository, ProfileService profileService, AuthRepository authRepository) {
         this.registeredUserRepository = registeredUserRepository;
-        this.regularUserService = regularUserService;
+        this.profileService = profileService;
         this.authRepository = authRepository;
     }
 
     @Override
-    public RegisteredUserDto getUser(long id) {
+    public ArrayList<RegisteredUserDto> getUserByCredentials(String username) {
+        ArrayList<RegisteredUserDto> list = new ArrayList<>();
+        list.add(convertToOutputDto(registeredUserRepository.getReferenceByUsername(username)));
+        return list;
+    }
+
+    @Override
+    public RegisteredUserDto getUser(String id) {
         checkIfUserExistsById(id);
 
         return convertToOutputDto(registeredUserRepository.getReferenceById(id));
@@ -51,44 +64,50 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
 
     @Override
     public RegisteredUserDto addNewUser(NewRegisteredUserDto userDto) {
+        checkIfUserAlreadyExists(userDto);
+
+        RegisteredUser user = convertNewDtoToEntity(userDto);
+
+        NewProfileDto newProfile = createNewProfileDto(user);
+
+        user.setProfileId(newProfile.getId());
+
+        Authority authority = new Authority(user.getUsername(), "ROLE_USER");
+        authRepository.save(authority);
+
+        profileService.addNewProfile(newProfile);
+
+        return convertToOutputDto(registeredUserRepository.save(user));
+    }
+
+    private void checkIfUserAlreadyExists(NewRegisteredUserDto userDto) {
         Optional<RegisteredUser> result = registeredUserRepository.findByEmail(userDto.getEmail());
 
         if (result.isPresent()) {
             throw new DuplicateEmailException("Email already in use!");
         }
 
-        RegisteredUser user = convertNewDtoToEntity(userDto);
+        result = registeredUserRepository.findByUsername(userDto.getUsername());
 
-        //save to generate userId so we can add it later to the regular user.
-        user = registeredUserRepository.save(user);
-
-        NewRegularUserDto newRegularUser = createNewRegularUserDto(user);
-
-        user.setRegularUserId(newRegularUser.getId());
-
-        Authority authority = new Authority();
-        authority.setUsername(userDto.getUsername());
-        authority.setAuthority("USER");
-        authRepository.save(authority);
-
-        regularUserService.addNewRegularUser(newRegularUser);
-
-        return convertToOutputDto(registeredUserRepository.save(user));
+        if (result.isPresent()) {
+            throw new UsernameAlreadyExistsException("Username already taken!");
+        }
     }
 
-    private NewRegularUserDto createNewRegularUserDto(RegisteredUser user) {
-        NewRegularUserDto regularUser = new NewRegularUserDto();
+    private NewProfileDto createNewProfileDto(RegisteredUser user) {
+        NewProfileDto newProfile = new NewProfileDto();
+        String newId;
 
-        regularUser.setId(generateRandomSequence());
-        regularUser.setRegisteredUserId(user.getId());
-        regularUser.setUsername(user.getUsername());
+        newProfile.setId(generateID(idLength));
+        newProfile.setRegisteredUserId(user.getId());
+        newProfile.setUsername(user.getUsername());
 
-        return regularUser;
+        return newProfile;
+
     }
 
     @Override
-    public RegisteredUserDto updateUser(Long id, RegisteredUserDto userDto) {
-
+    public RegisteredUserDto updateUser(String id, RegisteredUserDto userDto) {
 
         RegisteredUser userToUpdate = checkIfUserExistsById(id);
 
@@ -96,25 +115,15 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
     }
 
     @Override
-    public void removeUser(Long id) {
+    public void removeUser(String id) {
         checkIfUserExistsById(id);
         RegisteredUser user = registeredUserRepository.getReferenceById(id);
-        regularUserService.removeRegularUser(user.getId());
+        profileService.removeProfile(user.getProfileId());
 
         registeredUserRepository.deleteById(id);
     }
 
-    public RegisteredUser checkIfUserExistsByEmail(String email) {
-        Optional<RegisteredUser> result = registeredUserRepository.findByEmail(email);
-
-        if (result.isEmpty()) {
-            throw new RecordNotFoundException("This user does not exist.");
-        }
-
-        return result.get();
-    }
-
-    private RegisteredUser checkIfUserExistsById(Long id) {
+    private RegisteredUser checkIfUserExistsById(String id) {
         Optional<RegisteredUser> result = registeredUserRepository.findById(id);
 
         if (result.isEmpty()) {
@@ -138,6 +147,7 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
         RegisteredUser user = new RegisteredUser();
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
+        user.setId(generateID(idLength));
         user.setUsername(userDto.getUsername());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         user.setEmail(userDto.getEmail());
@@ -146,11 +156,19 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
         return user;
     }
 
+    private String generateID(int length){
+        String newId;
+        do {
+            newId = sequenceGenerator.AlphaNumeric(length);
+        } while (registeredUserRepository.findById(newId).isPresent());
+        return newId;
+    }
+
     private RegisteredUserDto convertToOutputDto(RegisteredUser user) {
         RegisteredUserDto userDto = new RegisteredUserDto();
 
         userDto.setId(user.getId());
-        userDto.setRegularUserId(user.getRegularUserId());
+        userDto.setProfileId(user.getProfileId());
         userDto.setArtistId(user.getArtistId());
         userDto.setProducerId(user.getProducerId());
         userDto.setName(user.getName());
@@ -160,30 +178,6 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
         userDto.setLocation(user.getLocation());
 
         return userDto;
-    }
-
-    private long generateRandomSequence() {
-        final long MAX_SIZE = 10_000_000_000L;
-        final long MIN_SIZE = 999_999_999L;
-        int length = 10;
-        long generatedSequence = 0L;
-
-        while (true) {
-            for (int i = 0; i < length; i++) {
-                generatedSequence += Math.random() * 100 / 10;
-
-                if(i < length - 1){
-                    generatedSequence *= 10;
-                }
-            }
-            boolean result = regularUserService.checkIfUserExists(generatedSequence);
-
-            if((generatedSequence < MAX_SIZE && generatedSequence > MIN_SIZE) && !result) {
-                break;
-            }
-        }
-
-        return generatedSequence;
     }
 
 }

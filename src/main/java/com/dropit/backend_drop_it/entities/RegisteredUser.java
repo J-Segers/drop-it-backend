@@ -1,14 +1,13 @@
 package com.dropit.backend_drop_it.entities;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 public class RegisteredUser {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -16,49 +15,56 @@ public class RegisteredUser {
     @Column(nullable = false, unique = true)
     private String password;
 
-    private Long regularUserId;
-    private Long artistId;
-    private Long producerId;
+    private String profileId;
+    private String artistId;
+    private String producerId;
     private String name;
-    private String username;
     private String dob;
     private String location;
     private boolean enabled;
+
+    @Id
+    @Column(nullable = false, unique = true)
+    private String username;
 
     @OneToMany(
             targetEntity = Authority.class,
             mappedBy = "username",
             cascade = CascadeType.ALL,
             orphanRemoval = true,
-            fetch = FetchType.LAZY
+            fetch = FetchType.EAGER
     )
-    private Set<Authority> authorities;
+    private Set<Authority> authorities = new HashSet<>();
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public Long getRegularUserId() {
-        return regularUserId;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public void setRegularUserId(Long regularUserId) {
-        this.regularUserId = regularUserId;
+    public String getProfileId() {
+        return profileId;
     }
 
-    public Long getArtistId() {
+    public void setProfileId(String profileId) {
+        this.profileId = profileId;
+    }
+
+    public String getArtistId() {
         return artistId;
     }
 
-    public void setArtistId(Long artistId) {
+    public void setArtistId(String artistId) {
         this.artistId = artistId;
     }
 
-    public Long getProducerId() {
+    public String getProducerId() {
         return producerId;
     }
 
-    public void setProducerId(Long producerId) {
+    public void setProducerId(String producerId) {
         this.producerId = producerId;
     }
 

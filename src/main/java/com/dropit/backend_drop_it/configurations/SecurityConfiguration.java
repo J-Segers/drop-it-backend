@@ -8,6 +8,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -23,6 +24,7 @@ import javax.sql.DataSource;
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final JwtServiceImpl jwtService;
+
     private final DataSource dataSource;
 
     public SecurityConfiguration(JwtServiceImpl jwtService, DataSource dataSource) {
@@ -55,15 +57,18 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-//                .antMatchers(HttpMethod.POST, "v1/artist/{id}/upload").hasAuthority("Artist")
-//                .antMatchers(HttpMethod.POST, "/v1/users/{id}/settings").hasAnyAuthority("REGULAR", "ARTIST")
-                .antMatchers(HttpMethod.GET, "/v1/users/{id}").permitAll()
+                .antMatchers(HttpMethod.GET, "/v1/users?username={username}").hasAuthority("ROLE_USER")
                 .antMatchers(HttpMethod.POST, "/v1/users").permitAll()
                 .antMatchers(HttpMethod.POST, "/auth").permitAll()
+                .antMatchers("/settings/**").authenticated()
                 .anyRequest().permitAll()
                 .and()
-                .addFilterBefore(new JwtRequestFilter(jwtService, userDetailsService()), UsernamePasswordAuthenticationFilter.class)
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+        http
+                .addFilterBefore(new JwtRequestFilter(jwtService, userDetailsService()),
+                        UsernamePasswordAuthenticationFilter.class);
     }
 
 }
