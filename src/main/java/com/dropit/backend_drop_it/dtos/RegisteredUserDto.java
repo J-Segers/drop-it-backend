@@ -2,7 +2,7 @@ package com.dropit.backend_drop_it.dtos;
 
 public class RegisteredUserDto {
 
-    private String id;
+    private Long id;
     private String profileId;
     private String artistId;
     private String producerId;
@@ -12,11 +12,11 @@ public class RegisteredUserDto {
     private String dob;
     private String location;
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

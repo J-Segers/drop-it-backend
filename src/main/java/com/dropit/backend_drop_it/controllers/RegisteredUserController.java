@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 @CrossOrigin
 @RestController
-@RequestMapping("v1/users")
+@RequestMapping("/users")
 public class RegisteredUserController {
 
     private final RegisteredUserService registeredUserService;
@@ -22,11 +22,11 @@ public class RegisteredUserController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<RegisteredUserDto> getUser(@PathVariable String id) {
+    public ResponseEntity<RegisteredUserDto> getUser(@PathVariable long id) {
         return ResponseEntity.ok(registeredUserService.getUser(id));
     }
 
-    @GetMapping
+    @GetMapping("/user")
     public ResponseEntity<ArrayList<RegisteredUserDto>> getAllUsers(@RequestParam(required = false) String username) {
 
         if(!username.isEmpty()) {
@@ -37,7 +37,7 @@ public class RegisteredUserController {
 
     }
 
-    @PostMapping
+    @PostMapping("")
     public ResponseEntity<RegisteredUserDto> addNewUser(@RequestBody NewRegisteredUserDto newUserDto) {
         RegisteredUserDto user = registeredUserService.addNewUser(newUserDto);
         URI location = URI.create("" + user.getId());
@@ -45,14 +45,14 @@ public class RegisteredUserController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<RegisteredUserDto> updateUser(@PathVariable String id, @RequestBody RegisteredUserDto userDto) {
+    public ResponseEntity<RegisteredUserDto> updateUser(@PathVariable Long id, @RequestBody RegisteredUserDto userDto) {
         userDto = registeredUserService.updateUser(id, userDto);
         return ResponseEntity.accepted().body(userDto);
     }
 
 
     @DeleteMapping("{id}")
-    public ResponseEntity<HttpStatus> removeUser(@PathVariable String id) {
+    public ResponseEntity<HttpStatus> removeUser(@PathVariable Long id) {
         registeredUserService.removeUser(id);
         return ResponseEntity.notFound().build();
     }

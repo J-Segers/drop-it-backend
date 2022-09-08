@@ -21,14 +21,15 @@ public class AuthServiceImpl implements AuthService{
 
     @Override
     public String getAuthorisation(AuthDto authDto) {
-
+        System.out.println(authDto);
         UsernamePasswordAuthenticationToken authToken =
                 new UsernamePasswordAuthenticationToken(authDto.getUsername(), authDto.getPassword());
+        System.out.println(authToken);
 
         Authentication authentication = authenticationManager.authenticate(authToken);
 
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-
+        System.out.println(userDetails);
         return jwtService.generateToken(userDetails);
     }
 

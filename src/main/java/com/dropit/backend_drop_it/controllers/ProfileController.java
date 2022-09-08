@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 @CrossOrigin
 @RestController
-@RequestMapping("v1/regular_users")
+@RequestMapping("regular_users")
 public class ProfileController {
 
     private final ProfileService profileService;

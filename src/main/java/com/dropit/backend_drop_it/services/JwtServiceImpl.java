@@ -48,14 +48,13 @@ public class JwtServiceImpl implements JwtService {
 
     private String createToken(Map<String, Object> claims, String username) {
 
-        long validPeriod = 1000 * 60 ; // 1 day * 60 * 24
-        long currentTime = System.currentTimeMillis();
+        long validPeriod = 1000 * 60 * 60 * 24; // 1 day
 
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(username)
-                .setIssuedAt(new Date(currentTime = validPeriod))
-                .setExpiration(new Date(currentTime + validPeriod))
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(new Date().getTime() + validPeriod))
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
     }

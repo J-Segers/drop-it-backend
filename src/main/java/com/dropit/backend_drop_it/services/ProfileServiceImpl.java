@@ -3,7 +3,9 @@ package com.dropit.backend_drop_it.services;
 import com.dropit.backend_drop_it.dtos.NewProfileDto;
 import com.dropit.backend_drop_it.dtos.ProfileDto;
 import com.dropit.backend_drop_it.entities.Profile;
+import com.dropit.backend_drop_it.entities.RegisteredUser;
 import com.dropit.backend_drop_it.repositories.ProfileRepository;
+import com.dropit.backend_drop_it.util.SequenceGenerator;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -13,6 +15,10 @@ import java.util.Optional;
 @Service
 public class ProfileServiceImpl implements ProfileService {
 
+    private final int ID_LENGTH = 10;
+
+
+    private final SequenceGenerator sequenceGenerator = new SequenceGenerator();
     private final ProfileRepository profileRepository;
 
     public ProfileServiceImpl(ProfileRepository profileRepository) {
@@ -30,8 +36,8 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public void addNewProfile(NewProfileDto newRegularUser) {
-        Profile newUser = convertNewDtoToEntity(newRegularUser);
+    public void addNewProfile(NewProfileDto newProfile) {
+        Profile newUser = convertNewDtoToEntity(newProfile);
         profileRepository.save(newUser);
     }
 
@@ -44,6 +50,30 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public void removeProfile(String id) {
         profileRepository.deleteById(id);
+    }
+
+    @Override
+    public String createNewProfileDtoFromNewUser(RegisteredUser user) {
+        NewProfileDto newProfile = new NewProfileDto();
+        String newId;
+        do {
+            newId = generateID(ID_LENGTH);
+        } while (profileRepository.findById(newId).isPresent());
+        newProfile.setId(newId);
+        newProfile.setRegisteredUserId(user.getId());
+        newProfile.setUsername(user.getUsername());
+
+        addNewProfile(newProfile);
+
+        return newId;
+    }
+
+    private String generateID(int length){
+        String newId;
+        do {
+            newId = sequenceGenerator.AlphaNumeric(length);
+        } while (profileRepository.findById(newId).isPresent());
+        return newId;
     }
 
     private Profile convertNewDtoToEntity(NewProfileDto dto) {

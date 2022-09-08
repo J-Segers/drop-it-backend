@@ -7,7 +7,9 @@ import java.util.Set;
 @Entity
 public class RegisteredUser {
 
-    private String id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -23,12 +25,11 @@ public class RegisteredUser {
     private String location;
     private boolean enabled;
 
-    @Id
     @Column(nullable = false, unique = true)
     private String username;
 
     @OneToMany(
-            targetEntity = Authority.class,
+            targetEntity = AuthorityKey.class,
             mappedBy = "username",
             cascade = CascadeType.ALL,
             orphanRemoval = true,
@@ -36,11 +37,11 @@ public class RegisteredUser {
     )
     private Set<Authority> authorities = new HashSet<>();
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

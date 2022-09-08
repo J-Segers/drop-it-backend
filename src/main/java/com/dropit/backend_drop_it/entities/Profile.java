@@ -9,7 +9,7 @@ public class Profile {
     @Id
     private String id;
 
-    private String registeredUserId;
+    private Long registeredUserId;
 
     private String username;
 
@@ -37,11 +37,11 @@ public class Profile {
         this.username = username;
     }
 
-    public String getRegisteredUserId() {
+    public Long getRegisteredUserId() {
         return registeredUserId;
     }
 
-    public void setRegisteredUserId(String registeredUserId) {
+    public void setRegisteredUserId(Long registeredUserId) {
         this.registeredUserId = registeredUserId;
     }
 

@@ -1,7 +1,6 @@
 package com.dropit.backend_drop_it.services;
 
 import com.dropit.backend_drop_it.dtos.NewRegisteredUserDto;
-import com.dropit.backend_drop_it.dtos.NewProfileDto;
 import com.dropit.backend_drop_it.dtos.RegisteredUserDto;
 import com.dropit.backend_drop_it.entities.Authority;
 import com.dropit.backend_drop_it.exceptions.DuplicateEmailException;
@@ -10,7 +9,6 @@ import com.dropit.backend_drop_it.entities.RegisteredUser;
 import com.dropit.backend_drop_it.exceptions.UsernameAlreadyExistsException;
 import com.dropit.backend_drop_it.repositories.AuthRepository;
 import com.dropit.backend_drop_it.repositories.RegisteredUserRepository;
-import com.dropit.backend_drop_it.util.SequenceGenerator;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,9 +21,6 @@ import java.util.Optional;
 @Service
 public class RegisteredUserServiceImpl implements RegisteredUserService {
 
-    private final int idLength = 10;
-
-    private final SequenceGenerator sequenceGenerator = new SequenceGenerator();
     private final RegisteredUserRepository registeredUserRepository;
     private final ProfileService profileService;
     private final AuthRepository authRepository;
@@ -37,17 +32,24 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
     }
 
     @Override
-    public ArrayList<RegisteredUserDto> getUserByCredentials(String username) {
-        ArrayList<RegisteredUserDto> list = new ArrayList<>();
-        list.add(convertToOutputDto(registeredUserRepository.getReferenceByUsername(username)));
-        return list;
-    }
-
-    @Override
-    public RegisteredUserDto getUser(String id) {
+    public RegisteredUserDto getUser(Long id) {
         checkIfUserExistsById(id);
 
         return convertToOutputDto(registeredUserRepository.getReferenceById(id));
+    }
+
+    @Override
+    public ArrayList<RegisteredUserDto> getUserByCredentials(String username) {
+        Optional<RegisteredUser> result = registeredUserRepository.findByUsername(username);
+        if(result.isEmpty()) {
+            throw new RecordNotFoundException("User does not exist in our database!");
+        }
+
+        ArrayList<RegisteredUserDto> list = new ArrayList<>();
+
+        list.add(convertToOutputDto(result.get()));
+
+        return list;
     }
 
     @Override
@@ -68,14 +70,15 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
 
         RegisteredUser user = convertNewDtoToEntity(userDto);
 
-        NewProfileDto newProfile = createNewProfileDto(user);
+        // save new user to generate id
+        user = registeredUserRepository.save(user);
+        System.out.println(user);
+        String profileId = profileService.createNewProfileDtoFromNewUser(user);
 
-        user.setProfileId(newProfile.getId());
+        user.setProfileId(profileId);
 
         Authority authority = new Authority(user.getUsername(), "ROLE_USER");
         authRepository.save(authority);
-
-        profileService.addNewProfile(newProfile);
 
         return convertToOutputDto(registeredUserRepository.save(user));
     }
@@ -94,20 +97,10 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
         }
     }
 
-    private NewProfileDto createNewProfileDto(RegisteredUser user) {
-        NewProfileDto newProfile = new NewProfileDto();
-        String newId;
 
-        newProfile.setId(generateID(idLength));
-        newProfile.setRegisteredUserId(user.getId());
-        newProfile.setUsername(user.getUsername());
-
-        return newProfile;
-
-    }
 
     @Override
-    public RegisteredUserDto updateUser(String id, RegisteredUserDto userDto) {
+    public RegisteredUserDto updateUser(Long id, RegisteredUserDto userDto) {
 
         RegisteredUser userToUpdate = checkIfUserExistsById(id);
 
@@ -115,7 +108,7 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
     }
 
     @Override
-    public void removeUser(String id) {
+    public void removeUser(Long id) {
         checkIfUserExistsById(id);
         RegisteredUser user = registeredUserRepository.getReferenceById(id);
         profileService.removeProfile(user.getProfileId());
@@ -123,7 +116,7 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
         registeredUserRepository.deleteById(id);
     }
 
-    private RegisteredUser checkIfUserExistsById(String id) {
+    private RegisteredUser checkIfUserExistsById(Long id) {
         Optional<RegisteredUser> result = registeredUserRepository.findById(id);
 
         if (result.isEmpty()) {
@@ -147,7 +140,6 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
         RegisteredUser user = new RegisteredUser();
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-        user.setId(generateID(idLength));
         user.setUsername(userDto.getUsername());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         user.setEmail(userDto.getEmail());
@@ -156,13 +148,7 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
         return user;
     }
 
-    private String generateID(int length){
-        String newId;
-        do {
-            newId = sequenceGenerator.AlphaNumeric(length);
-        } while (registeredUserRepository.findById(newId).isPresent());
-        return newId;
-    }
+
 
     private RegisteredUserDto convertToOutputDto(RegisteredUser user) {
         RegisteredUserDto userDto = new RegisteredUserDto();

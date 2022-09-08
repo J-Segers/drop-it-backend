@@ -8,15 +8,15 @@ import java.util.ArrayList;
 
 public interface RegisteredUserService {
 
-    RegisteredUserDto getUser(String id);
+    RegisteredUserDto getUser(Long id);
 
     ArrayList<RegisteredUserDto> getAllUsers();
 
     RegisteredUserDto addNewUser(NewRegisteredUserDto userDto);
 
-    RegisteredUserDto updateUser(String id, RegisteredUserDto userDto);
+    RegisteredUserDto updateUser(Long id, RegisteredUserDto userDto);
 
-    void removeUser(String id);
+    void removeUser(Long id);
 
     ArrayList<RegisteredUserDto> getUserByCredentials(String username);
 }
