@@ -1,9 +1,11 @@
-ALTER TABLE registered_user ALTER COLUMN artist_id DROP NOT NULL;
-ALTER TABLE registered_user ALTER COLUMN producer_id DROP NOT NULL;
+INSERT INTO authorities(name) VALUES('ROLE_USER');
+INSERT INTO authorities(name) VALUES('ROLE_ARTIST');
+INSERT INTO authorities(name) VALUES('ROLE_PRODUCER');
+INSERT INTO authorities(name) VALUES('ROLE_ADMIN');
 
-ALTER TABLE profile ALTER COLUMN liked_songs DROP NOT NULL;
-ALTER TABLE profile ALTER COLUMN disliked_songs DROP NOT NULL;
-ALTER TABLE profile ALTER COLUMN competitions_voted DROP NOT NULL;
+-- ALTER TABLE profile ALTER COLUMN liked_songs DROP NOT NULL;
+-- ALTER TABLE profile ALTER COLUMN disliked_songs DROP NOT NULL;
+-- ALTER TABLE profile ALTER COLUMN competitions_voted DROP NOT NULL;
 
 -- INSERT INTO registered_user (name, email, username, dob, location, artist_id, producer_id, regular_user_id, enabled)
 --     VALUES ('Piet', 'pietje@hatseflats.nl', 'cRazYPeTE', '12/08/1992', 'Nederland', null, null, 1234567890, true);

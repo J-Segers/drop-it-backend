@@ -1,32 +1,44 @@
 package com.dropit.backend_drop_it.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
-import java.util.ArrayList;
+import java.time.LocalDate;
+import java.time.Period;
 
 @Entity
+@JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"})
 public class Profile {
 
     @Id
-    private String id;
-
-    private String registeredUserId;
-
     private String username;
 
-    private String name;
+    @Column(nullable = false, unique = true)
+    private String email;
+    private String firstName;
+    private String lastName;
+    private LocalDate dob;
+    private int age;
     private String location;
     private String story;
 
-    private ArrayList<Long> likedSongs = new ArrayList<>();
-    private ArrayList<Long> dislikedSongs = new ArrayList<>();
-    private ArrayList<Long> competitionsVoted = new ArrayList<>();
+//    private Set<Long> likedSongs = new HashSet<>();
+//    private Set<Long> dislikedSongs = new HashSet<>();
+//    private Set<Long> competitionsVoted = new HashSet<>();
 
-    public String getId() {
-        return id;
+
+    public Profile() {
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public Profile(String username, String email, String firstName, String lastName, LocalDate dob, String location, String story) {
+        this.username = username;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.dob = dob;
+        this.age = Period.between(dob, LocalDate.now()).getYears();
+        this.location = location;
+        this.story = story;
     }
 
     public String getUsername() {
@@ -37,48 +49,83 @@ public class Profile {
         this.username = username;
     }
 
-    public String getRegisteredUserId() {
-        return registeredUserId;
+    public String getEmail() {
+        return email;
     }
 
-    public void setRegisteredUserId(String registeredUserId) {
-        this.registeredUserId = registeredUserId;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public ArrayList<Long> getLikedSongs() {
-        return likedSongs;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setLikedSongs(ArrayList<Long> likedSongs) {
-        this.likedSongs = likedSongs;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public void addSongToLikedList(Long songId) {
-        likedSongs.add(songId);
+    public String getLastName() {
+        return lastName;
     }
 
-    public ArrayList<Long> getDislikedSongs() {
-        return dislikedSongs;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
-    public void setDislikedSongs(ArrayList<Long> dislikedSongs) {
-        this.dislikedSongs = dislikedSongs;
+    public LocalDate getDob() {
+        return dob;
     }
 
-    public void addSongToDislikedList(Long songId) {
-        likedSongs.add(songId);
+    public void setDob(LocalDate dob) {
+        this.dob = dob;
     }
 
-    public ArrayList<Long> getCompetitionsVoted() {
-        return competitionsVoted;
+    public int getAge() {
+        return age;
     }
 
-    public void setCompetitionsVoted(ArrayList<Long> competitionsVoted) {
-        this.competitionsVoted = competitionsVoted;
+    public void setAge(int age) {
+        this.age = age;
     }
 
-    public void addCompToVotedList(Long CompetitionId) {
-        competitionsVoted.add(CompetitionId);
+    public String getLocation() {
+        return location;
     }
 
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getStory() {
+        return story;
+    }
+
+    public void setStory(String story) {
+        this.story = story;
+    }
+
+//    public Set<Long> getLikedSongs() {
+//        return likedSongs;
+//    }
+//
+//    public void setLikedSongs(Set<Long> likedSongs) {
+//        this.likedSongs = likedSongs;
+//    }
+//
+//    public Set<Long> getDislikedSongs() {
+//        return dislikedSongs;
+//    }
+//
+//    public void setDislikedSongs(Set<Long> dislikedSongs) {
+//        this.dislikedSongs = dislikedSongs;
+//    }
+//
+//    public Set<Long> getCompetitionsVoted() {
+//        return competitionsVoted;
+//    }
+//
+//    public void setCompetitionsVoted(Set<Long> competitionsVoted) {
+//        this.competitionsVoted = competitionsVoted;
+//    }
 }

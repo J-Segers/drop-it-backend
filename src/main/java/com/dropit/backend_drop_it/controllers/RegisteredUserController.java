@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 @CrossOrigin
 @RestController
-@RequestMapping("v1/users")
+@RequestMapping("/users")
 public class RegisteredUserController {
 
     private final RegisteredUserService registeredUserService;
@@ -21,38 +21,38 @@ public class RegisteredUserController {
         this.registeredUserService = registeredUserService;
     }
 
-    @GetMapping("{id}")
-    public ResponseEntity<RegisteredUserDto> getUser(@PathVariable String id) {
-        return ResponseEntity.ok(registeredUserService.getUser(id));
-    }
-
-    @GetMapping
-    public ResponseEntity<ArrayList<RegisteredUserDto>> getAllUsers(@RequestParam(required = false) String username) {
-
-        if(!username.isEmpty()) {
-                return ResponseEntity.ok(registeredUserService.getUserByCredentials(username));
-        } else {
-            return ResponseEntity.ok(registeredUserService.getAllUsers());
-        }
-
-    }
+//    @GetMapping("{id}")
+//    public ResponseEntity<RegisteredUserDto> getUser(@PathVariable String id) {
+//        return ResponseEntity.ok(registeredUserService.getUser(id));
+//    }
+//
+//    @GetMapping
+//    public ResponseEntity<ArrayList<RegisteredUserDto>> getAllUsers(@RequestParam(required = false) String username) {
+//
+//        if(!username.isEmpty()) {
+//                return ResponseEntity.ok(registeredUserService.getUserByCredentials(username));
+//        } else {
+//            return ResponseEntity.ok(registeredUserService.getAllUsers());
+//        }
+//
+//    }
 
     @PostMapping
-    public ResponseEntity<RegisteredUserDto> addNewUser(@RequestBody NewRegisteredUserDto newUserDto) {
-        RegisteredUserDto user = registeredUserService.addNewUser(newUserDto);
-        URI location = URI.create("" + user.getId());
+    public ResponseEntity<String> addNewUser(@RequestBody NewRegisteredUserDto newUserDto) {
+        String user = registeredUserService.addNewUser(newUserDto);
+        URI location = URI.create(user);
         return ResponseEntity.created(location).body(user);
     }
 
-    @PutMapping("{id}")
-    public ResponseEntity<RegisteredUserDto> updateUser(@PathVariable String id, @RequestBody RegisteredUserDto userDto) {
-        userDto = registeredUserService.updateUser(id, userDto);
-        return ResponseEntity.accepted().body(userDto);
-    }
-
-
-    @DeleteMapping("{id}")
-    public ResponseEntity<HttpStatus> removeUser(@PathVariable String id) {
+//    @PutMapping("{id}")
+//    public ResponseEntity<RegisteredUserDto> updateUser(@PathVariable String id, @RequestBody RegisteredUserDto userDto) {
+//        userDto = registeredUserService.updateUser(id, userDto);
+//        return ResponseEntity.accepted().body(userDto);
+//    }
+//
+//
+    @DeleteMapping("")
+    public ResponseEntity<HttpStatus> removeUser(@RequestParam String id) {
         registeredUserService.removeUser(id);
         return ResponseEntity.notFound().build();
     }

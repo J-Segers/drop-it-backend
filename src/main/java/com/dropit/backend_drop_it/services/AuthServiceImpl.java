@@ -25,8 +25,9 @@ public class AuthServiceImpl implements AuthService{
         UsernamePasswordAuthenticationToken authToken =
                 new UsernamePasswordAuthenticationToken(authDto.getUsername(), authDto.getPassword());
 
+        System.out.println(authToken);
         Authentication authentication = authenticationManager.authenticate(authToken);
-
+        System.out.println(authentication);
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
         return jwtService.generateToken(userDetails);

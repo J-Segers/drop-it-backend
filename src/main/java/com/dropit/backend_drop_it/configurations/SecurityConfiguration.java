@@ -48,8 +48,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .jdbcAuthentication()
                 .passwordEncoder(new BCryptPasswordEncoder())
                 .dataSource(dataSource)
-                .usersByUsernameQuery("select username, password, enabled from registered_user where username=?")
-                .authoritiesByUsernameQuery("select username, authority from authorities where username=?");
+                .usersByUsernameQuery("select username, password, enabled from users where username=?")
+                .authoritiesByUsernameQuery("select user_username, authority_id from user_authorities where user_username=?");
     }
 
     @Override
@@ -57,10 +57,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/v1/users?username={username}").hasAuthority("ROLE_USER")
-                .antMatchers(HttpMethod.POST, "/v1/users").permitAll()
-                .antMatchers(HttpMethod.POST, "/auth").permitAll()
-                .antMatchers("/settings/**").authenticated()
+//                .antMatchers(HttpMethod.GET, "/v1/users?username={username}").permitAll()
+//                .antMatchers(HttpMethod.POST, "/v1/users").permitAll()
+//                .antMatchers(HttpMethod.POST, "/auth").permitAll()
+//                .antMatchers("/settings/**").authenticated()
                 .anyRequest().permitAll()
                 .and()
                 .sessionManagement()

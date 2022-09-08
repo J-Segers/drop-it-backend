@@ -1,15 +1,13 @@
 package com.dropit.backend_drop_it.controllers;
 
-import com.dropit.backend_drop_it.dtos.ProfileDto;
+import com.dropit.backend_drop_it.entities.Profile;
 import com.dropit.backend_drop_it.services.ProfileService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-
 @CrossOrigin
 @RestController
-@RequestMapping("v1/regular_users")
+@RequestMapping("/profile")
 public class ProfileController {
 
     private final ProfileService profileService;
@@ -19,18 +17,8 @@ public class ProfileController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<ProfileDto> getUserById(@PathVariable String id) {
-        return ResponseEntity.ok(profileService.getUser(id));
+    public ResponseEntity<Profile> getUserById(@PathVariable String id) {
+        return ResponseEntity.ok(profileService.getProfile(id));
     }
 
-    @GetMapping
-    public ResponseEntity<ArrayList<ProfileDto>> getAllUsers() {
-        return ResponseEntity.ok(profileService.getAllUsers());
-    }
-
-    @PutMapping("{id}")
-    public ResponseEntity<ProfileDto> updateRegularUser(@PathVariable String id, @RequestBody ProfileDto updatedUserDto) {
-
-        return ResponseEntity.accepted().body(profileService.updateRegularUser(id, updatedUserDto));
-    }
 }

@@ -1,5 +1,6 @@
 package com.dropit.backend_drop_it.services;
 
+import com.dropit.backend_drop_it.entities.Authority;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 
 @Service
@@ -43,19 +45,19 @@ public class JwtServiceImpl implements JwtService {
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
 
-        return createToken(claims, userDetails.getUsername());
+        return createToken(claims, userDetails.getUsername(), userDetails.getAuthorities().toString());
     }
 
-    private String createToken(Map<String, Object> claims, String username) {
+    private String createToken(Map<String, Object> claims, String username, String authorities) {
 
-        long validPeriod = 1000 * 60 ; // 1 day * 60 * 24
-        long currentTime = System.currentTimeMillis();
+        long validPeriod = 1000 * 60 * 60 * 24; // 1 day
 
         return Jwts.builder()
-                .setClaims(claims)
                 .setSubject(username)
-                .setIssuedAt(new Date(currentTime = validPeriod))
-                .setExpiration(new Date(currentTime + validPeriod))
+                .setIssuer("dropit")
+                .claim("Authorities", authorities)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(new Date().getTime() + validPeriod))
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
     }
