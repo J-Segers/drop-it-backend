@@ -7,7 +7,7 @@ public class NewProfileDto {
     private String id;
     private String username;
     private String password;
-    private String registeredUserId;
+    private Long registeredUserId;
 
     public String getId() {
         return id;
@@ -17,11 +17,11 @@ public class NewProfileDto {
         this.id = id;
     }
 
-    public String getRegisteredUserId() {
+    public Long getRegisteredUserId() {
         return registeredUserId;
     }
 
-    public void setRegisteredUserId(String registeredUserId) {
+    public void setRegisteredUserId(Long registeredUserId) {
         this.registeredUserId = registeredUserId;
     }
 
