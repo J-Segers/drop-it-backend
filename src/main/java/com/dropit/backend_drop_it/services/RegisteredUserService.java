@@ -8,7 +8,7 @@ public interface RegisteredUserService {
 
     String addNewUser(NewRegisteredUserDto userDto);
 
-//    RegisteredUserDto updateUser(String id, RegisteredUserDto userDto);
+    RegisteredUserDto updateUser(String id, RegisteredUserDto userDto);
 
     void removeUser(String id);
 

@@ -1,55 +1,23 @@
 package com.dropit.backend_drop_it.dtos;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import java.util.Set;
+
 public class RegisteredUserDto {
 
-    private Long id;
-    private String profileId;
-    private String artistId;
-    private String producerId;
-    private String name;
+    private String username;
     private String email;
-    private String userName;
-    private String dob;
-    private String location;
+    @JsonIgnore
+    private String password;
+    private Set<String> authorities;
 
-    public Long getId() {
-        return id;
+    public String getUsername() {
+        return username;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getProfileId() {
-        return profileId;
-    }
-
-    public void setProfileId(String regularUserId) {
-        this.profileId = regularUserId;
-    }
-
-    public String getArtistId() {
-        return artistId;
-    }
-
-    public void setArtistId(String artistId) {
-        this.artistId = artistId;
-    }
-
-    public String getProducerId() {
-        return producerId;
-    }
-
-    public void setProducerId(String producerId) {
-        this.producerId = producerId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getEmail() {
@@ -60,28 +28,19 @@ public class RegisteredUserDto {
         this.email = email;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getPassword() {
+        return password;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    public String getDob() {
-        return dob;
+    public Set<String> getAuthorities() {
+        return authorities;
     }
 
-    public void setDob(String dob) {
-        this.dob = dob;
+    public void setAuthorities(Set<String> authorities) {
+        this.authorities = authorities;
     }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
 }

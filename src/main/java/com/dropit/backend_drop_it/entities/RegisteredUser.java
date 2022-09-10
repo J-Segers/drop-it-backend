@@ -18,6 +18,9 @@ public class RegisteredUser {
     private String username;
 
     @Column(nullable = false, unique = true)
+    private String email;
+
+    @Column(nullable = false, unique = true)
     private String password;
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -39,10 +42,10 @@ public class RegisteredUser {
     public RegisteredUser(NewRegisteredUserDto dto) {
         this.username = dto.getUsername();
         this.password = dto.getPassword();
+        this.email = dto.getEmail();
         this.enabled = true;
         this.profile = new Profile(
-                dto.getUsername(),
-                dto.getEmail()
+                dto.getUsername()
         );
     }
 
@@ -52,6 +55,14 @@ public class RegisteredUser {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {
@@ -76,5 +87,13 @@ public class RegisteredUser {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public Profile getProfile() {
+        return profile;
+    }
+
+    public void setProfile(Profile profile) {
+        this.profile = profile;
     }
 }

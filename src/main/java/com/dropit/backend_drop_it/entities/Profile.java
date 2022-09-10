@@ -14,14 +14,17 @@ public class Profile {
     @Column(nullable = false, unique = true)
     private String username;
 
-    @Column(nullable = false, unique = true)
-    private String email;
-
     private String firstName;
     private String lastName;
     private LocalDate dob;
     private int age;
     private String location;
+
+    @OneToOne
+    private FileUploadResponse profileImg;
+
+    @OneToOne
+    private FileUploadResponse profileBodyImg;
 
     @Column(length = 2048)
     private String story;
@@ -34,9 +37,8 @@ public class Profile {
     public Profile() {
     }
 
-    public Profile(String username, String email) {
+    public Profile(String username) {
         this.username = username;
-        this.email = email;
     }
 
 //    public Profile(String username, String email, String firstName, String lastName, LocalDate dob, String location, String story) {
@@ -56,14 +58,6 @@ public class Profile {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getFirstName() {
@@ -104,6 +98,22 @@ public class Profile {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public FileUploadResponse getProfileImg() {
+        return profileImg;
+    }
+
+    public void setProfileImg(FileUploadResponse profileImg) {
+        this.profileImg = profileImg;
+    }
+
+    public FileUploadResponse getProfileBodyImg() {
+        return profileBodyImg;
+    }
+
+    public void setProfileBodyImg(FileUploadResponse profileBodyImg) {
+        this.profileBodyImg = profileBodyImg;
     }
 
     public String getStory() {

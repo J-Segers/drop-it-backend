@@ -50,20 +50,28 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
         return "Success" ;
     }
 
-    public void updateUser(String id, RegisteredUserDto dto){
+    public RegisteredUserDto updateUser(String id, RegisteredUserDto dto){
+        RegisteredUser user = registeredUserRepository.getReferenceById(id);
 
-//        Set<String> strAuthorities = dto.getAuthority();
-//        Set<Authority> authorities = new HashSet<>();
+        Set<String> strAuthorities = dto.getAuthorities();
+        Set<Authority> authorities = new HashSet<>();
 
-//        strAuthorities.forEach(authority -> {
-//            switch (authority) {
-//                case "ADMIN" -> authorities.add(authRepository.getByName(EAuthority.ROLE_ADMIN));
-//                case "PRODUCER" -> authorities.add(authRepository.getByName(EAuthority.ROLE_PRODUCER));
-//                case "ARTIST" -> authorities.add(authRepository.getByName(EAuthority.ROLE_ARTIST));
-//                case "USER" -> authorities.add(authRepository.getByName(EAuthority.ROLE_USER));
-//            }
-//        });
+        strAuthorities.forEach(authority -> {
+            switch (authority) {
+                case "ADMIN" -> authorities.add(authRepository.getByName(EAuthority.ROLE_ADMIN));
+                case "PRODUCER" -> authorities.add(authRepository.getByName(EAuthority.ROLE_PRODUCER));
+                case "ARTIST" -> authorities.add(authRepository.getByName(EAuthority.ROLE_ARTIST));
+                case "USER" -> authorities.add(authRepository.getByName(EAuthority.ROLE_USER));
+            }
+        });
 
+        user.setAuthorities(authorities);
+        user.setEmail(dto.getEmail());
+        user.setPassword(dto.getPassword());
+
+        registeredUserRepository.save(user);
+
+        return dto;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.dropit.backend_drop_it.services;
 
-import com.dropit.backend_drop_it.dtos.ProfileDto;
+import com.dropit.backend_drop_it.dtos.ReturnProfileDto;
+import com.dropit.backend_drop_it.dtos.UpdateProfileDto;
 import com.dropit.backend_drop_it.entities.Profile;
 import com.dropit.backend_drop_it.repositories.ProfileRepository;
 import org.springframework.stereotype.Service;
@@ -16,20 +17,24 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public ProfileDto getProfile(String id) {
+    public ReturnProfileDto getProfile(String id) {
         return dtoFromProfile(profileRepository.getReferenceById(id));
     }
 
     @Override
-    public ProfileDto updateProfile(String id, ProfileDto dto) {
+    public ReturnProfileDto updateProfile(String id, UpdateProfileDto dto) {
         Profile profile = profileRepository.getReferenceById(id);
 
-        profile = profileFromDto(profile, dto);
+        profileFromDto(profile, dto);
 
-        return dtoFromProfile(profileRepository.save(profile));
+        profile = profileRepository.save(profile);
+
+
+        return dtoFromProfile(profile);
     }
 
-    private Profile profileFromDto(Profile profile, ProfileDto dto) {
+    private Profile profileFromDto(Profile profile, UpdateProfileDto dto) {
+
         profile.setFirstName(dto.getFirstName());
         profile.setLastName(dto.getLastName());
         profile.setDob(dto.getDob());
@@ -39,15 +44,16 @@ public class ProfileServiceImpl implements ProfileService {
         return profile;
     }
 
-    private ProfileDto dtoFromProfile(Profile profile) {
-        ProfileDto dto = new ProfileDto();
+    private ReturnProfileDto dtoFromProfile(Profile profile) {
+        ReturnProfileDto dto = new ReturnProfileDto();
 
         dto.setFirstName(profile.getFirstName());
         dto.setLastName(profile.getLastName());
-        dto.setDob(profile.getDob());
         dto.setAge(profile.getAge());
         dto.setLocation(profile.getLocation());
         dto.setStory(profile.getStory());
+        dto.setProfileImg(profile.getProfileImg());
+        dto.setProfileBodyImg(profile.getProfileBodyImg());
 
         return dto;
     }

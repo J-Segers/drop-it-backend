@@ -1,5 +1,7 @@
 package com.dropit.backend_drop_it.services;
 
+import com.dropit.backend_drop_it.entities.RegisteredUser;
+import com.dropit.backend_drop_it.repositories.RegisteredUserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -14,6 +16,11 @@ import java.util.function.Function;
 public class JwtServiceImpl implements JwtService {
 
     private final static String SECRET_KEY = "cakeBuglesFruityDuos";
+    private final RegisteredUserRepository registeredUserRepository;
+
+    public JwtServiceImpl(RegisteredUserRepository registeredUserRepository) {
+        this.registeredUserRepository = registeredUserRepository;
+    }
 
     @Override
     public String extractUsername(String token) {
@@ -41,10 +48,12 @@ public class JwtServiceImpl implements JwtService {
     @Override
     public String generateToken(UserDetails userDetails) {
 
-        return createToken(userDetails.getUsername(), userDetails.getAuthorities().toString());
+        RegisteredUser user = registeredUserRepository.getReferenceById(userDetails.getUsername());
+
+        return createToken(userDetails.getUsername(), userDetails.getAuthorities().toString(), user.getEmail());
     }
 
-    private String createToken(String username, String authorities) {
+    private String createToken(String username, String authorities, String email) {
         authorities = authorities.replaceAll("[\\[\\]]", "");
         String[] claims = authorities.split(",");
 
@@ -52,7 +61,7 @@ public class JwtServiceImpl implements JwtService {
 
         return Jwts.builder()
                 .setSubject(username)
-                .setIssuer("dropit")
+                .setIssuer(email)
                 .claim("Authorities", claims)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(new Date().getTime() + validPeriod))

@@ -1,11 +1,11 @@
 package com.dropit.backend_drop_it.services;
 
-import com.dropit.backend_drop_it.dtos.ProfileDto;
-import com.dropit.backend_drop_it.entities.Profile;
+import com.dropit.backend_drop_it.dtos.ReturnProfileDto;
+import com.dropit.backend_drop_it.dtos.UpdateProfileDto;
 
 public interface ProfileService {
 
-    ProfileDto getProfile(String id);
+    ReturnProfileDto getProfile(String id);
 
-    ProfileDto updateProfile(String id, ProfileDto dto);
+    ReturnProfileDto updateProfile(String id, UpdateProfileDto dto);
 }

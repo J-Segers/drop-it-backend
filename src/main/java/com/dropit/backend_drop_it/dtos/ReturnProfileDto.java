@@ -1,9 +1,11 @@
 package com.dropit.backend_drop_it.dtos;
 
+import com.dropit.backend_drop_it.entities.FileUploadResponse;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class ProfileDto {
+public class ReturnProfileDto {
 
     private String firstName;
     private String lastName;
@@ -11,6 +13,8 @@ public class ProfileDto {
     private int age;
     private String location;
     private String story;
+    private FileUploadResponse profileImg;
+    private FileUploadResponse profileBodyImg;
 
     private ArrayList<Long> likedSongs = new ArrayList<>();
     private ArrayList<Long> dislikedSongs = new ArrayList<>();
@@ -62,6 +66,22 @@ public class ProfileDto {
 
     public void setStory(String story) {
         this.story = story;
+    }
+
+    public FileUploadResponse getProfileImg() {
+        return profileImg;
+    }
+
+    public void setProfileImg(FileUploadResponse profileImg) {
+        this.profileImg = profileImg;
+    }
+
+    public FileUploadResponse getProfileBodyImg() {
+        return profileBodyImg;
+    }
+
+    public void setProfileBodyImg(FileUploadResponse profileBodyImg) {
+        this.profileBodyImg = profileBodyImg;
     }
 
     public ArrayList<Long> getLikedSongs() {

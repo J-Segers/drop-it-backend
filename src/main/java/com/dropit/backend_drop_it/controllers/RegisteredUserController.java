@@ -44,13 +44,13 @@ public class RegisteredUserController {
         return ResponseEntity.created(location).body(user);
     }
 
-//    @PutMapping("{id}")
-//    public ResponseEntity<RegisteredUserDto> updateUser(@PathVariable String id, @RequestBody RegisteredUserDto userDto) {
-//        userDto = registeredUserService.updateUser(id, userDto);
-//        return ResponseEntity.accepted().body(userDto);
-//    }
-//
-//
+    @PutMapping("{id}")
+    public ResponseEntity<RegisteredUserDto> updateUser(@PathVariable String id, @RequestBody RegisteredUserDto userDto) {
+        userDto = registeredUserService.updateUser(id, userDto);
+        return ResponseEntity.accepted().body(userDto);
+    }
+
+
     @DeleteMapping("/delete")
     public ResponseEntity<HttpStatus> removeUser(@RequestParam String id) {
         registeredUserService.removeUser(id);
