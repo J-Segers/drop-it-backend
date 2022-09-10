@@ -37,7 +37,7 @@ public class RegisteredUserController {
 //
 //    }
 
-    @PostMapping
+    @PostMapping("/new")
     public ResponseEntity<String> addNewUser(@RequestBody NewRegisteredUserDto newUserDto) {
         String user = registeredUserService.addNewUser(newUserDto);
         URI location = URI.create(user);
@@ -51,7 +51,7 @@ public class RegisteredUserController {
 //    }
 //
 //
-    @DeleteMapping("")
+    @DeleteMapping("/delete")
     public ResponseEntity<HttpStatus> removeUser(@RequestParam String id) {
         registeredUserService.removeUser(id);
         return ResponseEntity.notFound().build();

@@ -8,7 +8,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -57,9 +56,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-//                .antMatchers(HttpMethod.GET, "/v1/users?username={username}").permitAll()
-//                .antMatchers(HttpMethod.POST, "/v1/users").permitAll()
-//                .antMatchers(HttpMethod.POST, "/auth").permitAll()
+                .antMatchers( "/profile/**").permitAll()
+                .antMatchers( "/users?username={username}").permitAll()
+                .antMatchers( "/users/new").permitAll()
+                .antMatchers( "/auth").permitAll()
 //                .antMatchers("/settings/**").authenticated()
                 .anyRequest().permitAll()
                 .and()

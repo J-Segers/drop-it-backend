@@ -11,15 +11,19 @@ import java.time.Period;
 public class Profile {
 
     @Id
+    @Column(nullable = false, unique = true)
     private String username;
 
     @Column(nullable = false, unique = true)
     private String email;
+
     private String firstName;
     private String lastName;
     private LocalDate dob;
     private int age;
     private String location;
+
+    @Column(length = 2048)
     private String story;
 
 //    private Set<Long> likedSongs = new HashSet<>();
@@ -30,16 +34,21 @@ public class Profile {
     public Profile() {
     }
 
-    public Profile(String username, String email, String firstName, String lastName, LocalDate dob, String location, String story) {
+    public Profile(String username, String email) {
         this.username = username;
         this.email = email;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.dob = dob;
-        this.age = Period.between(dob, LocalDate.now()).getYears();
-        this.location = location;
-        this.story = story;
     }
+
+//    public Profile(String username, String email, String firstName, String lastName, LocalDate dob, String location, String story) {
+//        this.username = username;
+//        this.email = email;
+//        this.firstName = firstName;
+//        this.lastName = lastName;
+//        this.dob = dob;
+//        this.age = Period.between(dob, LocalDate.now()).getYears();
+//        this.location = location;
+//        this.story = story;
+//    }
 
     public String getUsername() {
         return username;

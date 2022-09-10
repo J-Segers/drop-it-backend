@@ -42,12 +42,7 @@ public class RegisteredUser {
         this.enabled = true;
         this.profile = new Profile(
                 dto.getUsername(),
-                dto.getEmail(),
-                dto.getFirstName(),
-                dto.getLastName(),
-                dto.getDob(),
-                dto.getLocation(),
-                dto.getStory()
+                dto.getEmail()
         );
     }
 

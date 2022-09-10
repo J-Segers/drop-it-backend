@@ -1,41 +1,67 @@
 package com.dropit.backend_drop_it.dtos;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class ProfileDto {
 
-    private String id;
-
-    private String username;
-
-    private boolean enabled;
+    private String firstName;
+    private String lastName;
+    private LocalDate dob;
+    private int age;
+    private String location;
+    private String story;
 
     private ArrayList<Long> likedSongs = new ArrayList<>();
     private ArrayList<Long> dislikedSongs = new ArrayList<>();
     private ArrayList<Long> competitionsVoted = new ArrayList<>();
 
-    public String getId() {
-        return id;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public String getUsername() {
-        return username;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
-    public boolean isEnabled() {
-        return enabled;
+    public LocalDate getDob() {
+        return dob;
     }
 
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+    public void setDob(LocalDate dob) {
+        this.dob = dob;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getStory() {
+        return story;
+    }
+
+    public void setStory(String story) {
+        this.story = story;
     }
 
     public ArrayList<Long> getLikedSongs() {

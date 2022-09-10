@@ -1,6 +1,7 @@
 package com.dropit.backend_drop_it.services;
 
 import com.dropit.backend_drop_it.dtos.NewRegisteredUserDto;
+import com.dropit.backend_drop_it.dtos.RegisteredUserDto;
 import com.dropit.backend_drop_it.entities.Authority;
 import com.dropit.backend_drop_it.entities.EAuthority;
 import com.dropit.backend_drop_it.entities.RegisteredUser;
@@ -40,20 +41,29 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
 
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
-        Set<String> strAuthorities = userDto.getAuthority();
         Set<Authority> authorities = new HashSet<>();
-        strAuthorities.forEach(authority -> {
-            switch (authority) {
-                case "ADMIN" -> authorities.add(authRepository.getByName(EAuthority.ROLE_ADMIN));
-                case "PRODUCER" -> authorities.add(authRepository.getByName(EAuthority.ROLE_PRODUCER));
-                case "ARTIST" -> authorities.add(authRepository.getByName(EAuthority.ROLE_ARTIST));
-                case "USER" -> authorities.add(authRepository.getByName(EAuthority.ROLE_USER));
-            }
-        });
+        authorities.add((authRepository.getByName(EAuthority.ROLE_ARTIST)));
+
         user.setAuthorities(authorities);
         registeredUserRepository.save(user);
 
         return "Success" ;
+    }
+
+    public void updateUser(String id, RegisteredUserDto dto){
+
+//        Set<String> strAuthorities = dto.getAuthority();
+//        Set<Authority> authorities = new HashSet<>();
+
+//        strAuthorities.forEach(authority -> {
+//            switch (authority) {
+//                case "ADMIN" -> authorities.add(authRepository.getByName(EAuthority.ROLE_ADMIN));
+//                case "PRODUCER" -> authorities.add(authRepository.getByName(EAuthority.ROLE_PRODUCER));
+//                case "ARTIST" -> authorities.add(authRepository.getByName(EAuthority.ROLE_ARTIST));
+//                case "USER" -> authorities.add(authRepository.getByName(EAuthority.ROLE_USER));
+//            }
+//        });
+
     }
 
     @Override
