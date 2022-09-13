@@ -1,23 +1,29 @@
 package com.dropit.backend_drop_it.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import java.io.File;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import javax.persistence.*;
 
 @Entity
+@JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"})
+
 public class Song {
 
     @Id
-    String songId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long songId;
 
     String songTitle;
     String songArtist;
     String songLength;
     String songGenre;
     String songCollaborators;
-    File songImg;
-    File song;
+
+    @OneToOne
+    FileUploadResponse songImg;
+
+    @OneToOne
+    FileUploadResponse song;
 
     @Column(length = 2048)
     String songStory;
@@ -26,24 +32,17 @@ public class Song {
 
     }
 
-    public Song(String songId, String songTitle, String songArtist, String songLength, String songGenre, String songCollaborators, File songImg, File song, String songStory) {
-        this.songId = songId;
+    public Song(String songTitle, String songArtist, String songLength, String songGenre, String songCollaborators, String songStory) {
         this.songTitle = songTitle;
         this.songArtist = songArtist;
         this.songLength = songLength;
         this.songGenre = songGenre;
         this.songCollaborators = songCollaborators;
-        this.songImg = songImg;
-        this.song = song;
         this.songStory = songStory;
     }
 
-    public String getSongId() {
+    public Long getSongId() {
         return songId;
-    }
-
-    public void setSongId(String songId) {
-        this.songId = songId;
     }
 
     public String getSongTitle() {
@@ -86,19 +85,19 @@ public class Song {
         this.songCollaborators = songCollaborators;
     }
 
-    public File getSongImg() {
+    public FileUploadResponse getSongImg() {
         return songImg;
     }
 
-    public void setSongImg(File songImg) {
+    public void setSongImg(FileUploadResponse songImg) {
         this.songImg = songImg;
     }
 
-    public File getSong() {
+    public FileUploadResponse getSong() {
         return song;
     }
 
-    public void setSong(File song) {
+    public void setSong(FileUploadResponse song) {
         this.song = song;
     }
 

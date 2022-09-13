@@ -1,10 +1,8 @@
 package com.dropit.backend_drop_it.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.Period;
 
 @Entity
 @JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"})
@@ -40,17 +38,6 @@ public class Profile {
     public Profile(String username) {
         this.username = username;
     }
-
-//    public Profile(String username, String email, String firstName, String lastName, LocalDate dob, String location, String story) {
-//        this.username = username;
-//        this.email = email;
-//        this.firstName = firstName;
-//        this.lastName = lastName;
-//        this.dob = dob;
-//        this.age = Period.between(dob, LocalDate.now()).getYears();
-//        this.location = location;
-//        this.story = story;
-//    }
 
     public String getUsername() {
         return username;

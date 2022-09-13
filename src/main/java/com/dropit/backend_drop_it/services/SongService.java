@@ -1,10 +1,11 @@
 package com.dropit.backend_drop_it.services;
 
+import com.dropit.backend_drop_it.dtos.NewSongDto;
 import com.dropit.backend_drop_it.entities.FileUploadResponse;
-import com.dropit.backend_drop_it.entities.Profile;
+import com.dropit.backend_drop_it.entities.Song;
 import com.dropit.backend_drop_it.exceptions.RecordNotFoundException;
 import com.dropit.backend_drop_it.repositories.FileUploadRepository;
-import com.dropit.backend_drop_it.repositories.ProfileRepository;
+import com.dropit.backend_drop_it.repositories.SongRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -18,26 +19,27 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 @Service
-public class PhotoService {
-    @Value("${my.upload_location}")
+public class SongService {
+    @Value("${my.song_upload_location}")
     private Path fileStoragePath;
     private final String fileStorageLocation;
 
     private final FileUploadRepository fileUploadRepository;
 
-    private final ProfileRepository profileRepository;
+    private final SongRepository songRepository;
 
-    public PhotoService(@Value("${my.upload_location}") String fileStorageLocation, FileUploadRepository fileUploadRepository, ProfileRepository profileRepository) {
+    public SongService(@Value("${my.song_upload_location}") String fileStorageLocation, FileUploadRepository fileUploadRepository, SongRepository songRepository) {
         fileStoragePath = Paths.get(fileStorageLocation).toAbsolutePath().normalize();
 
         this.fileStorageLocation = fileStorageLocation;
         this.fileUploadRepository = fileUploadRepository;
 
-        this.profileRepository = profileRepository;
+        this.songRepository = songRepository;
 
         try {
             Files.createDirectories(fileStoragePath);
@@ -75,33 +77,52 @@ public class PhotoService {
             throw new RuntimeException("Issue in reading the file", e);
         }
 
-        if(resource.exists()&& resource.isReadable()) {
+        if (resource.exists() && resource.isReadable()) {
             return resource;
         } else {
             throw new RuntimeException("the file doesn't exist or not readable");
         }
     }
 
-    public void assignPhotoToProfile(String fileName, String username, String type) {
-        Optional<Profile> optionalProfile = profileRepository.findById(username);
-        Optional<FileUploadResponse> photoUploadResponse = fileUploadRepository.findByFileName(fileName);
+    public void assignFileToSong(String fileName, Long songId, String type) {
+        Optional<Song> optionalSong = songRepository.findById(songId);
+        Optional<FileUploadResponse> songUploadResponse = fileUploadRepository.findByFileName(fileName);
 
-        if(optionalProfile.isPresent() && photoUploadResponse.isPresent()) {
-            FileUploadResponse photo = photoUploadResponse.get();
-            Profile profile = optionalProfile.get();
+        if (optionalSong.isPresent() && songUploadResponse.isPresent()) {
+            FileUploadResponse songFile = songUploadResponse.get();
+            Song song = optionalSong.get();
 
-            if(type.equals("profileImg")) {
-                profile.setProfileImg(photo);
-            } else if(type.equals("profileBodyImg")) {
-                profile.setProfileBodyImg(photo);
+            if (type.equals("img")) {
+                song.setSongImg(songFile);
+            } else if (type.equals("song")) {
+                song.setSong(songFile);
             }
 
-            profileRepository.save(profile);
+            songRepository.save(song);
         } else {
-            throw new RecordNotFoundException("Gebruiker: " + username + " niet gevonden");
+            throw new RecordNotFoundException("Song with id: " + songId + " does not exist!");
         }
 
     }
 
+    public Song addSong(NewSongDto songDto) {
+        Song song = new Song(
+                songDto.getSongTitle(),
+                songDto.getSongArtist(),
+                songDto.getSongLength(),
+                songDto.getSongGenre(),
+                songDto.getSongCollaborators(),
+                songDto.getSongStory()
+        );
+        return songRepository.save(song);
+    }
+
+    public List<Song> getAllSongsOfArtist(String artistName) {
+        return songRepository.getAllBySongArtist(artistName);
+    }
+
+    public List<Song> getAllSongs() {
+        return songRepository.findAll();
+    }
 }
 
